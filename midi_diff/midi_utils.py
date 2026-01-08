@@ -51,18 +51,19 @@ def extract_notes(mid: mido.MidiFile) -> List[NoteEvent]:
     notes = []
     ongoing = {}  # key: pitch, value: (start_tick, velocity)
 
-    tick = 0
-    for msg in mid:
-        tick += msg.time
-        if msg.type == "note_on" and msg.velocity > 0:
-            ongoing[msg.note] = (tick, msg.velocity)
-        elif (msg.type == "note_off") or (
-            msg.type == "note_on" and msg.velocity == 0
-        ):
-            if msg.note in ongoing:
-                start, vel = ongoing.pop(msg.note)
-                duration = tick - start
-                notes.append(NoteEvent(msg.note, start, duration, vel))
+    for track in mid.tracks:
+        tick = 0
+        for msg in track:
+            tick += msg.time
+            if msg.type == "note_on" and msg.velocity > 0:
+                ongoing[msg.note] = (tick, msg.velocity)
+            elif (msg.type == "note_off") or (
+                msg.type == "note_on" and msg.velocity == 0
+            ):
+                if msg.note in ongoing:
+                    start, vel = ongoing.pop(msg.note)
+                    duration = tick - start
+                    notes.append(NoteEvent(msg.note, start, duration, vel))
 
     return notes
 
