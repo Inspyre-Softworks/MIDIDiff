@@ -16,7 +16,7 @@ Description:
 
 """
 import mido
-from midi_utils import extract_notes, notes_to_midi
+from midi_diff.midi_utils import extract_notes, notes_to_midi
 
 
 def main(file_a: str, file_b: str, out_file: str):

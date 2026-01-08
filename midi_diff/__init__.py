@@ -16,7 +16,7 @@ Description:
 
 """
 import sys
-from midi_utils import extract_notes, notes_to_midi
+from midi_diff.midi_utils import extract_notes, notes_to_midi
 import mido
 
 
