@@ -85,7 +85,7 @@ def notes_to_midi(notes: List[NoteEvent], ticks_per_beat=480) -> mido.MidiFile:
     last_tick = 0
     for tick, msg in events:
         delta = tick - last_tick
-        msg.time = delta
+        msg.time = int(delta)
         track.append(msg)
         last_tick = tick
 
