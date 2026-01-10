@@ -5,7 +5,7 @@ This workflow automatically creates releases and publishes packages when the ver
 ## Features
 
 - **Automatic Version Detection**: Triggers when version changes in `pyproject.toml`
-- **Pre-release Detection**: Automatically detects pre-release versions (containing `-dev`, `-alpha`, `-beta`, `-rc`, etc.)
+- **Pre-release Detection**: Automatically detects pre-release versions following PEP 440 (e.g., `dev`, `alpha`, `beta`, `rc`, `a[N]`, `b[N]` with or without separators)
 - **GitHub Releases**: Creates GitHub releases with auto-generated release notes
 - **Package Publishing**:
   - Publishes to **PyPI** for stable releases
@@ -50,7 +50,7 @@ Version format: `1.0.0`, `2.1.3`, etc.
 - Publishes to **PyPI**
 
 ### Pre-release
-Version format: `1.0.0-dev.1`, `2.0.0-alpha.1`, `1.5.0-beta`, `1.0.0-rc.1`, etc.
+Version format: `1.0.0.dev1`, `2.0.0a1`, `1.5.0b2`, `1.0.0rc1`, `1.0.0-dev.1`, etc.
 - Creates a GitHub Release (marked as pre-release)
 - Publishes to **Test PyPI**
 
@@ -59,7 +59,7 @@ Version format: `1.0.0-dev.1`, `2.0.0-alpha.1`, `1.5.0-beta`, `1.0.0-rc.1`, etc.
 1. Update the version in `pyproject.toml`:
    ```toml
    [project]
-   version = "1.0.0"  # or "1.0.0-dev.1" for pre-release
+   version = "1.0.0"  # or "1.0.0.dev1" for pre-release
    ```
 
 2. Commit and push to `main` branch:
