@@ -18,6 +18,7 @@ import json
 import os
 import platform
 import sys
+import urllib.error
 import urllib.request
 from importlib import metadata
 from midi_diff.core import main
@@ -50,7 +51,7 @@ def _check_for_update(current_version: str) -> str:
     try:
         with urllib.request.urlopen(PYPI_JSON_URL, timeout=5) as response:
             payload = json.load(response)
-    except Exception as exc:
+    except (urllib.error.URLError, urllib.error.HTTPError, OSError, json.JSONDecodeError) as exc:
         return f"Update check failed: {exc}"
 
     latest = payload.get("info", {}).get("version")
@@ -87,7 +88,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "-V",
         "--version",
         action="store_true",
-        help=f"Show version and environment info (set {UPDATE_CHECK_ENV_VAR}=1 to check for updates).",
+        help=(
+            f"Show version and environment info "
+            f"(set {UPDATE_CHECK_ENV_VAR} to a truthy value like '1', 'true', or 'yes' to check for updates)."
+        ),
     )
     return parser
 
@@ -100,11 +104,11 @@ def cli() -> None:
         python -m midi_diff.cli fileA.mid fileB.mid diff.mid
 
     """
-    if "-V" in sys.argv or "--version" in sys.argv:
-        _print_version_info()
-        return
     parser = _build_parser()
     args = parser.parse_args()
+    if args.version:
+        _print_version_info()
+        return
     main(args.file_a, args.file_b, args.out_file)
 
 
