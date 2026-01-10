@@ -14,18 +14,21 @@ Description:
 
 """
 import argparse
+import json
 import platform
 import sys
 import urllib.request
-import json
 from importlib import metadata
 from midi_diff.core import main
+
+DIST_NAME = "midi-diff"
+PYPI_JSON_URL = f"https://pypi.org/pypi/{DIST_NAME}/json"
 
 
 def _get_version() -> str:
     version = "unknown"
     try:
-        version = metadata.version("midi-diff")
+        version = metadata.version(DIST_NAME)
     except metadata.PackageNotFoundError:
         pass
     return version
@@ -39,9 +42,8 @@ def _get_dependency_version(name: str) -> str:
 
 
 def _check_for_update(current_version: str) -> str:
-    url = "https://pypi.org/pypi/midi-diff/json"
     try:
-        with urllib.request.urlopen(url, timeout=5) as response:
+        with urllib.request.urlopen(PYPI_JSON_URL, timeout=5) as response:
             payload = json.load(response)
     except Exception as exc:
         return f"Update check failed: {exc}"
@@ -67,9 +69,9 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Compare two MIDI files and output their differences.",
     )
-    parser.add_argument("file_a", nargs="?", help="Path to the first MIDI file.")
-    parser.add_argument("file_b", nargs="?", help="Path to the second MIDI file.")
-    parser.add_argument("out_file", nargs="?", help="Path for the diff MIDI output.")
+    parser.add_argument("file_a", help="Path to the first MIDI file.")
+    parser.add_argument("file_b", help="Path to the second MIDI file.")
+    parser.add_argument("out_file", help="Path for the diff MIDI output.")
     parser.add_argument(
         "-V",
         "--version",
@@ -87,18 +89,11 @@ def cli() -> None:
         python -m midi_diff.cli fileA.mid fileB.mid diff.mid
 
     """
-    parser = _build_parser()
-    args = parser.parse_args()
-
-    if args.version:
+    if "-V" in sys.argv or "--version" in sys.argv:
         _print_version_info()
         return
-
-    if not args.file_a or not args.file_b or not args.out_file:
-        parser.print_usage()
-        print("fileA.mid fileB.mid diff.mid")
-        return
-
+    parser = _build_parser()
+    args = parser.parse_args()
     main(args.file_a, args.file_b, args.out_file)
 
 
