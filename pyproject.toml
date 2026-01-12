@@ -1,6 +1,6 @@
 [project]
 name = "midi-diff"
-version = "1.0.0-dev.2"
+version = "1.0.0-dev.3"
 description = ""
 authors = [
     {name = "Taylor-Jayde Blackstone",email = "t.blackstone@inspyre.tech"}

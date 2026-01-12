@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated documentation to mandate changelog updates for user-facing changes
 - Consolidated changelog guidance to CONTRIBUTING.md with references from AGENTS.md and copilot-instructions.md to reduce duplication
 - Simplified PR template to have single changelog checklist item instead of duplicate entries
+
+## [1.0.0-dev.3] - 2026-01-12
+
+### Changed
 - Refactored CLI version lookup to reuse shared metadata retrieval and remove duplication
 
 ## [1.0.0-dev.2] - 2026-01-10
@@ -32,5 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Output only notes present in one file but not the other
 - Immutable `NoteEvent` dataclass with MIDI bounds validation
 
-[Unreleased]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.2...HEAD
+[Unreleased]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.3...HEAD
+[1.0.0-dev.3]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.2...v1.0.0-dev.3
 [1.0.0-dev.2]: https://github.com/tayjaybabee/MIDIDiff/releases/tag/v1.0.0-dev.2
