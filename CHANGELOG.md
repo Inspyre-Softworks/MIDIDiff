@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simplified PR template to have single changelog checklist item instead of duplicate entries
 - Version info display now uses rich formatting with colored table and panel layout
 - CLI refactored to use subcommand structure (argparse subparsers) with `diff` and `debug-info` subcommands
+- **BREAKING (internal):** Refactored `midi_diff/cli.py` monolithic module (310 lines) into a package structure with separation of concerns:
+  - `midi_diff/cli/__init__.py` - Package entry point exporting `cli()` function
+  - `midi_diff/cli/main.py` - Main CLI entry point with command routing
+  - `midi_diff/cli/parser.py` - Argument parser configuration
+  - `midi_diff/cli/version.py` - Version information and update checking
+  - `midi_diff/cli/debug.py` - Debug information generation
+  - `midi_diff/cli/clipboard.py` - Cross-platform clipboard operations
+  - `midi_diff/cli/commands.py` - Command handler functions
+  - `midi_diff/cli/__main__.py` - Module execution support (`python -m midi_diff.cli`)
+  - All public APIs remain unchanged; this is purely an internal restructuring
 
 ## [1.0.0-dev.3] - 2026-01-12
 
