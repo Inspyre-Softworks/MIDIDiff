@@ -250,11 +250,9 @@ def cli() -> None:
     parser = _build_parser()
     
     # Backward compatibility: If first arg isn't a known subcommand/flag,
-    # try to parse as 'diff' subcommand by prepending it to argv
-    # This approach is more robust than checking argv length directly
+    # assume it's a file path and prepend 'diff' to make it work with the new structure.
+    # Argparse will handle validation of the actual arguments.
     if len(sys.argv) > 1 and sys.argv[1] not in KNOWN_SUBCOMMANDS_AND_FLAGS:
-        # Try parsing to see if we get valid diff arguments
-        # This handles edge cases better than just checking length
         sys.argv.insert(1, 'diff')
     
     args = parser.parse_args()
