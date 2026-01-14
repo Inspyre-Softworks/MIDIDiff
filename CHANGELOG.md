@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-01-14
+
+### Added
+- CLI sub-package (`midi_diff.cli`) with dedicated modules for version info, debug info, and argument parsing
+- Optional CLI dependency group for `rich` library, allowing core library use without CLI dependencies
+- Fallback plain-text output when `rich` is not installed
+- `debug-info` subcommand for displaying comprehensive diagnostic information
+- Programmatic API examples in README
+- API stability guarantees for 1.x release series
+- Migration notes for CLI sub-package restructure
+
+### Changed
+- **Breaking (internal)**: Separated CLI into dedicated sub-package (`midi_diff/cli/`) from single `cli.py` module
+- CLI dependencies (`rich`) moved to optional extras group `[cli]` in `pyproject.toml`
+- Core library (`midi_diff`) now has minimal dependencies (only `mido`)
+- Backward compatibility maintained through shim in `midi_diff/cli.py` for existing imports
+
+### Fixed
+- None
+
+## [1.0.0-dev.4] - 2026-01-14
+
 ### Added
 - CHANGELOG.md file to track project changes
 - Contribution guidelines (CONTRIBUTING.md) with changelog maintenance requirements
@@ -43,6 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Output only notes present in one file but not the other
 - Immutable `NoteEvent` dataclass with MIDI bounds validation
 
-[Unreleased]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.3...HEAD
+[Unreleased]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.4...v1.0.0
+[1.0.0-dev.4]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.3...v1.0.0-dev.4
 [1.0.0-dev.3]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.2...v1.0.0-dev.3
 [1.0.0-dev.2]: https://github.com/tayjaybabee/MIDIDiff/releases/tag/v1.0.0-dev.2
