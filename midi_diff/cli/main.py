@@ -19,6 +19,11 @@ from midi_diff.core import main as core_main
 from midi_diff.cli.version import print_version_info, print_debug_info, UPDATE_CHECK_ENV_VAR
 
 
+# Known subcommands and flags for backward compatibility
+KNOWN_COMMANDS = frozenset({'diff', 'debug-info'})
+KNOWN_FLAGS = frozenset({'-V', '--version', '-h', '--help'})
+
+
 class VersionAction(argparse.Action):
     """Custom argparse action to print version info and exit."""
     
@@ -70,35 +75,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _get_known_subcommands_and_flags(parser: argparse.ArgumentParser) -> frozenset:
-    """
-    Extract known subcommands and flags from parser configuration.
-    
-    This dynamically generates the set of known commands and flags to avoid
-    hardcoding and keep it synchronized with the actual parser configuration.
-    
-    Parameters:
-        parser: Configured ArgumentParser instance
-        
-    Returns:
-        Frozenset of known subcommands and flag strings
-    """
-    known = set()
-    
-    # Add top-level optional flags
-    for action in parser._actions:
-        if action.option_strings:
-            known.update(action.option_strings)
-    
-    # Add subcommand names
-    for action in parser._actions:
-        if isinstance(action, argparse._SubParsersAction):
-            known.update(action.choices.keys())
-    
-    return frozenset(known)
-
-
-def run_cli() -> None:
+def run_cli(argv=None) -> None:
     """
     Main CLI entry point for MIDIDiff.
 
@@ -111,16 +88,20 @@ def run_cli() -> None:
     """
     parser = build_parser()
     
-    # Get known subcommands and flags dynamically from parser
-    known_subcommands_and_flags = _get_known_subcommands_and_flags(parser)
+    # Default to sys.argv[1:] if no argv provided
+    if argv is None:
+        argv = sys.argv[1:]
+    
+    # Combine known commands and flags for backward compatibility check
+    known_subcommands_and_flags = KNOWN_COMMANDS | KNOWN_FLAGS
     
     # Backward compatibility: If first arg isn't a known subcommand/flag,
     # assume it's a file path and prepend 'diff' to make it work with the new structure.
     # Argparse will handle validation of the actual arguments.
-    if len(sys.argv) > 1 and sys.argv[1] not in known_subcommands_and_flags:
-        sys.argv.insert(1, 'diff')
+    if len(argv) > 0 and argv[0] not in known_subcommands_and_flags:
+        argv = ['diff'] + list(argv)
     
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     
     # Handle subcommands
     if args.command == 'diff':
