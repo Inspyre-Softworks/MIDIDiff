@@ -8,8 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Subcommand and flag list now dynamically generated from parser configuration instead of hardcoded
-- Added explicit documentation about network requests in update check function
+- Replaced dynamic subcommand/flag extraction with explicit `KNOWN_COMMANDS` and `KNOWN_FLAGS` constants for better maintainability
+- Introduced individual command and flag constants (`COMMAND_DIFF`, `COMMAND_DEBUG_INFO`, `FLAG_VERSION_SHORT`, etc.) as single source of truth, referenced by both `build_parser()` and backward compatibility logic to prevent drift
+- `run_cli()` now accepts optional `argv` parameter (type-annotated as `Sequence[str] | None`) for improved testability
+- CLI argument parsing no longer mutates `sys.argv`
+
+### Removed
+- `midi_diff/cli.py` backward compatibility shim (conflicts with new package structure)
+- `_get_known_subcommands_and_flags()` function that relied on private argparse APIs
+- Redundant `if __name__ == "__main__":` block from `midi_diff/cli/__init__.py`
 
 ## [1.0.0] - 2026-01-14
 

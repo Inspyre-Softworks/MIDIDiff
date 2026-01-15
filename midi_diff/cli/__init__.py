@@ -28,9 +28,4 @@ def cli() -> None:
     run_cli()
 
 
-# Support for `python -m midi_diff.cli`
-if __name__ == "__main__":
-    cli()
-
-
 __all__ = ["cli"]
