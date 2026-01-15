@@ -1,7 +1,8 @@
 [project]
 name = "midi-diff"
 version = "1.0.0"
-description = ""
+description = "Output the differences between two MIDI files."
+license = {text = "MIT"}
 authors = [
     {name = "Taylor-Jayde Blackstone",email = "t.blackstone@inspyre.tech"}
 ]
