@@ -47,7 +47,7 @@ jobs:
         run: |
           # Check if version line in pyproject.toml was modified
           # Looks for lines starting with +/- and containing "version ="
-          git diff HEAD^ HEAD -- pyproject.toml > version_diff.txt
+          git diff "${{ github.event.before }}" "${{ github.sha }}" -- pyproject.toml > version_diff.txt
           if grep -qE "^[+-]version[[:space:]]*=" version_diff.txt; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "Version has changed"
