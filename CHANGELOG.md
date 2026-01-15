@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Replaced dynamic subcommand/flag extraction with explicit `KNOWN_COMMANDS` and `KNOWN_FLAGS` constants for better maintainability
-- `run_cli()` now accepts optional `argv` parameter for improved testability
+- Introduced individual command and flag constants (`COMMAND_DIFF`, `COMMAND_DEBUG_INFO`, `FLAG_VERSION_SHORT`, etc.) as single source of truth, referenced by both `build_parser()` and backward compatibility logic to prevent drift
+- `run_cli()` now accepts optional `argv` parameter (type-annotated as `Sequence[str] | None`) for improved testability
 - CLI argument parsing no longer mutates `sys.argv`
 
 ### Removed

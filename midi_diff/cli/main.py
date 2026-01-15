@@ -15,13 +15,28 @@ Description:
 """
 import argparse
 import sys
+from typing import Sequence
 from midi_diff.core import main as core_main
 from midi_diff.cli.version import print_version_info, print_debug_info, UPDATE_CHECK_ENV_VAR
 
 
-# Known subcommands and flags for backward compatibility
-KNOWN_COMMANDS = frozenset({'diff', 'debug-info'})
-KNOWN_FLAGS = frozenset({'-V', '--version', '-h', '--help'})
+# Subcommand names - single source of truth for CLI commands
+# These are referenced by both build_parser() and backward compatibility logic
+COMMAND_DIFF = 'diff'
+COMMAND_DEBUG_INFO = 'debug-info'
+
+# Flag definitions - single source of truth for CLI flags
+# These are referenced by both build_parser() and backward compatibility logic
+FLAG_VERSION_SHORT = '-V'
+FLAG_VERSION_LONG = '--version'
+FLAG_HELP_SHORT = '-h'
+FLAG_HELP_LONG = '--help'
+
+# Known subcommands and flags for backward compatibility.
+# These sets are derived from the constants above to ensure they stay
+# synchronized with the parser configuration in build_parser().
+KNOWN_COMMANDS = frozenset({COMMAND_DIFF, COMMAND_DEBUG_INFO})
+KNOWN_FLAGS = frozenset({FLAG_VERSION_SHORT, FLAG_VERSION_LONG, FLAG_HELP_SHORT, FLAG_HELP_LONG})
 
 
 class VersionAction(argparse.Action):
@@ -44,8 +59,8 @@ def build_parser() -> argparse.ArgumentParser:
         description="MIDIDiff - Compare MIDI files and output their differences.",
     )
     parser.add_argument(
-        "-V",
-        "--version",
+        FLAG_VERSION_SHORT,
+        FLAG_VERSION_LONG,
         action=VersionAction,
         nargs=0,
         help=(
@@ -59,7 +74,7 @@ def build_parser() -> argparse.ArgumentParser:
     
     # diff subcommand (main functionality)
     diff_parser = subparsers.add_parser(
-        'diff',
+        COMMAND_DIFF,
         help='Compare two MIDI files and output their differences'
     )
     diff_parser.add_argument("file_a", help="Path to the first MIDI file.")
@@ -68,16 +83,20 @@ def build_parser() -> argparse.ArgumentParser:
     
     # debug-info subcommand (no additional arguments needed)
     subparsers.add_parser(
-        'debug-info',
+        COMMAND_DEBUG_INFO,
         help='Display diagnostic and environment information'
     )
     
     return parser
 
 
-def run_cli(argv=None) -> None:
+def run_cli(argv: Sequence[str] | None = None) -> None:
     """
     Main CLI entry point for MIDIDiff.
+
+    Parameters:
+        argv: Command-line arguments to parse. If None, defaults to sys.argv[1:].
+              Accepts any sequence of strings (e.g., list, tuple) for testability.
 
     Usage:
         midi-diff fileA.mid fileB.mid output.mid  (assumes 'diff' subcommand)
@@ -99,14 +118,14 @@ def run_cli(argv=None) -> None:
     # assume it's a file path and prepend 'diff' to make it work with the new structure.
     # Argparse will handle validation of the actual arguments.
     if len(argv) > 0 and argv[0] not in known_subcommands_and_flags:
-        argv = ['diff'] + list(argv)
+        argv = [COMMAND_DIFF] + list(argv)
     
     args = parser.parse_args(argv)
     
     # Handle subcommands
-    if args.command == 'diff':
+    if args.command == COMMAND_DIFF:
         core_main(args.file_a, args.file_b, args.out_file)
-    elif args.command == 'debug-info':
+    elif args.command == COMMAND_DEBUG_INFO:
         print_debug_info()
     else:
         # No subcommand provided - show help
