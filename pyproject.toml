@@ -1,7 +1,7 @@
 [project]
 name = "midi-diff"
 version = "1.0.0"
-description = "Output the differences between two MIDI files."
+description = "Output the differences between two MIDI files, using the command-line."
 license = {text = "MIT"}
 authors = [
     {name = "Taylor-Jayde Blackstone",email = "t.blackstone@inspyre.tech"}
