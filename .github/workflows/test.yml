@@ -50,9 +50,9 @@ jobs:
       
       - name: Test package imports
         run: |
-          poetry run python -c "import midi_diff; print('✓ midi_diff package imported successfully')"
-          poetry run python -c "from midi_diff.cli import cli; print('✓ midi_diff.cli imported successfully')"
-          poetry run python -c "from midi_diff.core import main; print('✓ midi_diff.core imported successfully')"
+          poetry run python -c "import midi_diff; print('midi_diff package imported successfully')"
+          poetry run python -c "from midi_diff.cli import cli; print('midi_diff.cli imported successfully')"
+          poetry run python -c "from midi_diff.core import main; print('midi_diff.core imported successfully')"
       
       - name: Test CLI --version flag
         run: poetry run midi-diff --version
