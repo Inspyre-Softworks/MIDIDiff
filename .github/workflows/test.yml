@@ -49,7 +49,7 @@ jobs:
       
       - name: Test package import
         run: |
-          poetry run python -c "from midi_diff import __version__; print(f'Successfully imported midi_diff v{__version__}')"
+          poetry run python -c "from midi_diff.core import main; print('Successfully imported midi_diff.core')"
       
       - name: Test CLI help
         run: |
