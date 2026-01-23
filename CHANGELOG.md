@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `check-updates` subcommand to explicitly check for available updates from PyPI
 - `upgrade` subcommand to upgrade midi-diff to the latest version using pip
 - `--pre` flag for `upgrade` subcommand to include pre-release versions
+- CI/CD workflow (`.github/workflows/test.yml`) for automated testing across Python 3.11/3.12/3.13 on Ubuntu/Windows/macOS
+  - Validates package build, imports, and CLI commands (`--version`, `--help`, `debug-info`)
+  - Runs on push/PR to `master`, `main`, and `develop` branches
+  - Uses `fail-fast: false` to ensure all platform/version combinations are tested
+
+### Fixed
+- Windows CI build failures by switching from `snok/install-poetry` action to direct `pip install poetry` approach for better cross-platform compatibility
 
 ## [1.0.1] - 2026-01-21
 
