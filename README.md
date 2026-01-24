@@ -4,9 +4,20 @@ MIDIDiff compares two MIDI files and produces a third MIDI file containing the
 notes that are present in only one of the inputs. Notes are matched by pitch,
 start tick, and duration; velocity differences are ignored.
 
+## Documentation
+
+Full documentation is available at [Read the Docs](https://MIDIDiff.readthedocs.io/) (once published).
+
+To build the documentation locally:
+
+```shell
+cd docs
+poetry run sphinx-build -b html . _build/html
+```
+
 ## Requirements
 
-- Python 3.13+
+- Python 3.11+
 - `mido` (installed automatically via the project dependencies)
 - `rich` (optional, for enhanced CLI output)
 
@@ -30,7 +41,7 @@ pip install dist/*.whl
 For CLI functionality with rich formatting, install with CLI extras:
 
 ```shell
-pip install "dist/*.whl[cli]"
+pip install dist/midi_diff-*.whl[cli]
 ```
 
 Or install directly from the package:
@@ -60,7 +71,7 @@ midi-diff fileA.mid fileB.mid diff.mid
 You can also run the module directly:
 
 ```shell
-python -m midi_diff.cli fileA.mid fileB.mid diff.mid
+python -m midi_diff.cli diff fileA.mid fileB.mid diff.mid
 ```
 
 ### Output behavior

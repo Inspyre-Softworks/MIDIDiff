@@ -30,3 +30,7 @@ cli = ["rich"]
 
 [tool.poetry.scripts]
 midi-diff = "midi_diff.cli:cli"
+
+[tool.poetry.group.dev.dependencies]
+sphinx = ">=7.0,<9.0"
+sphinx-rtd-theme = ">=2.0,<3.0"

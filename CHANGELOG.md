@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Sphinx documentation with autodoc, napoleon, and Read the Docs theme
+  - Comprehensive API documentation for all modules and classes
+  - Installation, quickstart, usage, and contributing guides
+  - Code-blocks with syntax highlighting
+  - Cross-references and intersphinx support for Python and mido documentation
+  - `.readthedocs.yaml` configuration for automatic RTD builds
+
+### Changed
+- Updated README.md Python version requirement from 3.13+ to 3.11+ to match pyproject.toml
+- Fixed pip install command in README.md to use proper wheel filename pattern (`midi_diff-*.whl`)
+- Updated CLI module path in README.md to include `diff` subcommand
+
+### Fixed
+- README.md pip install command with wildcard inside quotes (should expand glob first)
+- pyproject.toml: Changed `[dependency-groups]` to `[tool.poetry.group.dev.dependencies]` for proper Poetry recognition
+- docs/usage.rst: Corrected environment variable name from `MIDI_DIFF_CHECK_UPDATES` to `MIDIFF_CHECK_UPDATES`
+
 ## [1.0.2] - 2026-01-21
 
 ### Added
