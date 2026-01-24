@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - README.md pip install command with wildcard inside quotes (should expand glob first)
+- pyproject.toml: Changed `[dependency-groups]` to `[tool.poetry.group.dev.dependencies]` for proper Poetry recognition
+- docs/usage.rst: Corrected environment variable name from `MIDI_DIFF_CHECK_UPDATES` to `MIDIFF_CHECK_UPDATES`
 
 ## [1.0.2] - 2026-01-21
 

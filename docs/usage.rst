@@ -77,7 +77,7 @@ To include an update check, set the environment variable:
 
 .. code-block:: bash
 
-   MIDI_DIFF_CHECK_UPDATES=1 midi-diff --version
+   MIDIFF_CHECK_UPDATES=1 midi-diff --version
 
 Architecture
 ------------
