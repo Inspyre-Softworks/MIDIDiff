@@ -84,7 +84,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     
     # Create subparsers for subcommands
-    subparsers: argparse._SubParsersAction[argparse.ArgumentParser] = parser.add_subparsers(  # type: ignore[attr-defined]
+    subparsers = parser.add_subparsers(
         dest='command',
         help='Available commands',
     )

@@ -18,7 +18,6 @@ Description:
 from __future__ import annotations
 
 import sys
-from typing import List
 
 from midi_diff.midi_utils import extract_notes, notes_to_midi
 
