@@ -16,7 +16,7 @@ Description:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Iterator
 
 import mido
 
