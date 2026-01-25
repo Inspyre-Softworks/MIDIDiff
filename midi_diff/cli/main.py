@@ -35,6 +35,9 @@ COMMAND_CHECK_UPDATES: Final[str] = 'check-updates'
 COMMAND_UPGRADE: Final[str] = 'upgrade'
 COMMAND_DOCS: Final[str] = 'docs'
 
+# Documentation URL
+DOCUMENTATION_URL: Final[str] = "https://mididiff.readthedocs.io/en/latest/"
+
 # Flag definitions - single source of truth for CLI flags
 # These are referenced by both build_parser() and backward compatibility logic
 FLAG_VERSION_SHORT: Final[str] = '-V'
@@ -68,11 +71,16 @@ def open_documentation() -> None:
     Open MIDIDiff documentation in the user's default web browser.
     
     Opens https://mididiff.readthedocs.io/en/latest/ in the system's
-    default web browser.
+    default web browser. If the browser cannot be opened, prints an error
+    message with the URL so the user can manually navigate to it.
     """
-    url = "https://mididiff.readthedocs.io/en/latest/"
-    print(f"Opening documentation at {url}")
-    webbrowser.open(url)
+    print(f"Opening documentation at {DOCUMENTATION_URL}")
+    try:
+        webbrowser.open(DOCUMENTATION_URL)
+    except Exception as e:
+        print(f"Warning: Unable to open browser automatically: {e}")
+        print(f"Please visit the documentation manually at: {DOCUMENTATION_URL}")
+        sys.exit(1)
 
 
 def build_parser() -> argparse.ArgumentParser:
