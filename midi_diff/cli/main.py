@@ -67,10 +67,10 @@ def open_documentation() -> None:
     """
     Open MIDIDiff documentation in the user's default web browser.
     
-    Opens http://mididiff.readthedocs.io/en/latest/ in the system's
+    Opens https://mididiff.readthedocs.io/en/latest/ in the system's
     default web browser.
     """
-    url = "http://mididiff.readthedocs.io/en/latest/"
+    url = "https://mididiff.readthedocs.io/en/latest/"
     print(f"Opening documentation at {url}")
     webbrowser.open(url)
 
