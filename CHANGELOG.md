@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-01-26
+
+### Fixed
+- Windows upgrade command now retries with `--user` when a file lock (`WinError 32`) blocks overwriting the `midi-diff.exe` shim, avoiding upgrade failures.
+
 ## [1.0.4] - 2026-01-26
 
 ### Added
