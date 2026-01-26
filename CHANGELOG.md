@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-01-26
+
 ### Added
 - Sphinx documentation with autodoc, napoleon, and Read the Docs theme
   - Comprehensive API documentation for all modules and classes
@@ -34,11 +36,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README.md Python version requirement from 3.13+ to 3.11+ to match pyproject.toml
 - Fixed pip install command in README.md to use proper wheel filename pattern (`midi_diff-*.whl`)
 - Updated CLI module path in README.md to include `diff` subcommand
+- Moved module entry point logic from `__init__.py` to dedicated `__main__.py` following Python conventions
 
 ### Fixed
 - README.md pip install command with wildcard inside quotes (should expand glob first)
 - pyproject.toml: Changed `[dependency-groups]` to `[tool.poetry.group.dev.dependencies]` for proper Poetry recognition
 - docs/usage.rst: Corrected environment variable name from `MIDI_DIFF_CHECK_UPDATES` to `MIDIFF_CHECK_UPDATES`
+- Running `python -m midi_diff` now dispatches to the CLI entry point instead of printing the legacy usage string
 
 ## [1.0.2] - 2026-01-21
 
@@ -130,7 +134,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Output only notes present in one file but not the other
 - Immutable `NoteEvent` dataclass with MIDI bounds validation
 
-[Unreleased]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.3...v1.0.4
+[1.0.3]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.2...v1.0.3
+[1.0.2]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.4...v1.0.0
 [1.0.0-dev.4]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.3...v1.0.0-dev.4
 [1.0.0-dev.3]: https://github.com/tayjaybabee/MIDIDiff/compare/v1.0.0-dev.2...v1.0.0-dev.3
