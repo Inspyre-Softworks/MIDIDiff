@@ -374,9 +374,8 @@ def upgrade_package(include_pre: bool = False) -> None:
         # Parse stderr for more helpful error messages
         error_msg = e.stderr or str(e)
         # Handle Windows file lock errors (WinError 32) by retrying with --user install
-        if os.name == "nt" and "WinError 32" in error_msg and "--user" not in pip_cmd:
-            fallback_cmd = list(pip_cmd)
-            fallback_cmd.insert(len(fallback_cmd) - 1, "--user")
+        if os.name == "nt" and "WinError 32" in error_msg and all(arg != "--user" for arg in pip_cmd):
+            fallback_cmd = pip_cmd[:-1] + ["--user", pip_cmd[-1]]
             try:
                 fallback_result = subprocess.run(
                     fallback_cmd,
