@@ -31,7 +31,7 @@ def emit_completion_script(
     Parameters
     ----------
     shell:
-        Target shell name (bash, zsh, fish).
+        Target shell name (bash, zsh, fish, powershell, cmd).
     commands:
         Iterable of supported subcommands.
     flags:
@@ -50,6 +50,8 @@ def emit_completion_script(
     flags_list = " ".join(sorted(flags))
     commands_ps_array = "@(\"" + "\", \"".join(sorted(commands)) + "\")"
     flags_ps_array = "@(\"" + "\", \"".join(sorted(flags)) + "\")"
+    shells_list = " ".join(sorted(SUPPORTED_SHELLS))
+    shells_ps_array = "@(\"" + "\", \"".join(sorted(SUPPORTED_SHELLS)) + "\")"
 
     if shell == "bash":
         return f"""# Bash completion for midi-diff
@@ -60,7 +62,7 @@ _midi_diff_completions() {{
     prev="{{COMP_WORDS[COMP_CWORD-1]}}"
 
     if [[ $COMP_CWORD -eq 1 ]]; then
-        COMPREPLY=($(compgen -W "{commands_list}" -- "$cur"))
+    COMPREPLY=($(compgen -W "{commands_list}" -- "$cur"))
         return 0
     fi
 
@@ -74,7 +76,7 @@ _midi_diff_completions() {{
             COMPREPLY=($(compgen -W "--pre" -- "$cur"))
             ;;
         completion)
-            COMPREPLY=($(compgen -W "bash zsh fish" -- "$cur"))
+            COMPREPLY=($(compgen -W "{shells_list}" -- "$cur"))
             ;;
         *)
             COMPREPLY=($(compgen -W "{flags_list}" -- "$cur"))
@@ -108,7 +110,7 @@ _midi_diff() {{
                     _values 'upgrade options' --pre
                     ;;
                 completion)
-                    _values 'shell' bash zsh fish
+                    _values 'shell' {shells_list}
                     ;;
                 *)
                     _values 'flags' {flags_list}
@@ -130,7 +132,7 @@ complete -c midi-diff -n "__fish_use_subcommand" -a "{commands_list}" -d "midi-d
 
 complete -c midi-diff -n "__fish_seen_subcommand_from diff" -a "(__fish_complete_path)" -d "MIDI file path"
 complete -c midi-diff -n "__fish_seen_subcommand_from upgrade" -l pre -d "Include pre-release versions"
-complete -c midi-diff -n "__fish_seen_subcommand_from completion" -a "bash zsh fish" -d "Target shell"
+complete -c midi-diff -n "__fish_seen_subcommand_from completion" -a "{shells_list}" -d "Target shell"
 """
 
     if shell == "powershell":
@@ -142,6 +144,7 @@ Register-ArgumentCompleter -CommandName midi-diff -ScriptBlock {{
 
     $commands = {commands_ps_array}
     $flags = {flags_ps_array}
+    $shells = {shells_ps_array}
 
     # if first token after command
     if ($commandAst.CommandElements.Count -le 2) {{
@@ -165,7 +168,7 @@ Register-ArgumentCompleter -CommandName midi-diff -ScriptBlock {{
             }}
         }}
         "completion" {{
-            foreach ($s in @("bash","zsh","fish","powershell","cmd")) {{
+            foreach ($s in $shells) {{
                 if ($s -like "$wordToComplete*") {{
                     [CompletionResult]::new($s, $s, 'ParameterValue', 'shell')
                 }}
