@@ -58,15 +58,15 @@ def emit_completion_script(
 _midi_diff_completions() {{
     local cur prev
     COMPREPLY=()
-    cur="{{COMP_WORDS[COMP_CWORD]}}"
-    prev="{{COMP_WORDS[COMP_CWORD-1]}}"
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     if [[ $COMP_CWORD -eq 1 ]]; then
     COMPREPLY=($(compgen -W "{commands_list}" -- "$cur"))
         return 0
     fi
 
-    case "{{COMP_WORDS[1]}}" in
+    case "${COMP_WORDS[1]}" in
         diff)
             if [[ $COMP_CWORD -le 4 ]]; then
                 COMPREPLY=($(compgen -f -- "$cur"))
@@ -139,7 +139,7 @@ complete -c midi-diff -n "__fish_seen_subcommand_from completion" -a "{shells_li
         return f"""# PowerShell completion for midi-diff
 using namespace System.Management.Automation
 
-Register-ArgumentCompleter -CommandName midi-diff -ScriptBlock {{
+Register-ArgumentCompleter -Native -CommandName midi-diff -ScriptBlock {{
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
 
     $commands = {commands_ps_array}
