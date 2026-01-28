@@ -31,16 +31,16 @@ poetry run sphinx-build -b html . _build/html
 
 ### For Development (Editable Install)
 
-If you're contributing to MIDIDiff or testing changes, use an editable install:
+If you're contributing to MIDIDiff or testing changes, install in editable mode:
 
-**With Poetry (recommended):**
+**Recommended:**
 ```shell
 poetry install --extras cli
 ```
 
 Poetry installs the package in editable mode by default, so changes to the source code are immediately reflected.
 
-**With pip:**
+**Alternative (using pip):**
 ```shell
 pip install -e ".[cli]"
 ```
@@ -48,14 +48,6 @@ pip install -e ".[cli]"
 The `-e` flag creates an editable install, allowing you to modify the code without reinstalling.
 
 For more details, see the [Testing Guide](https://MIDIDiff.readthedocs.io/en/latest/testing.html).
-
-### With Poetry (recommended for development)
-
-```shell
-poetry install
-```
-
-This installs the core library and all optional dependencies, including the CLI extras.
 
 ### Build and install locally
 

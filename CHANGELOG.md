@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Installation documentation now emphasizes editable install (`-e` flag) for development workflow.
 - README.md now features a dedicated "For Development" section at the top of the Installation guide.
+- Standardized on `poetry install --extras cli` as the primary development command across all documentation, with pip alternatives clearly marked as secondary.
+- Improved consistency in editable install guidance throughout README.md, CONTRIBUTING.md, and docs/testing.rst.
 
 ## [1.0.6] - 2026-01-27
 

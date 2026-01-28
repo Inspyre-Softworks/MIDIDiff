@@ -10,7 +10,9 @@ Editable Install with Poetry (Recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Poetry automatically installs the package in editable mode, which means changes
-to the source code are immediately reflected without needing to reinstall:
+to the source code are immediately reflected without needing to reinstall.
+
+**Primary development command:**
 
 .. code-block:: bash
 
@@ -18,14 +20,14 @@ to the source code are immediately reflected without needing to reinstall:
    git clone https://github.com/Inspyre-Softworks/MIDIDiff.git
    cd MIDIDiff
    
-   # Install with Poetry (includes dev dependencies)
+   # Install with Poetry (includes CLI extras and dev dependencies)
    poetry install --extras cli
    
    # Run the CLI to verify installation
    poetry run midi-diff --version
 
-Editable Install with pip
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Editable Install with pip (Alternative)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you prefer to use pip directly instead of Poetry, you can install the package
 in editable mode using the ``-e`` flag:
