@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-01-28
+
+### Fixed
+- Fixed `NameError` in bash completion script generation caused by unescaped curly braces in f-string for bash variables (`COMP_WORDS`, `COMP_CWORD`).
+
+### Added
+- Comprehensive shell completions documentation (`docs/shell-completions.rst`) with detailed installation instructions for bash, zsh, fish, PowerShell, and cmd.
+- Updated README.md and usage.rst to reference the new shell completions guide.
+
 ## [1.0.6] - 2026-01-27
 
 ### Added

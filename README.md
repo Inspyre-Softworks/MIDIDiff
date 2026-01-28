@@ -106,7 +106,7 @@ midi-diff debug-info
 
 ### Shell completions
 
-Generate shell completion scripts:
+Generate shell completion scripts for enhanced command-line experience:
 
 ```shell
 midi-diff completion bash        # Bash
@@ -116,7 +116,7 @@ midi-diff completion powershell  # PowerShell
 midi-diff completion cmd         # Command Prompt (prints doskey helper)
 ```
 
-Then follow your shell's instructions to load the printed script.
+**Installation:** For detailed instructions on installing and configuring shell completions for your specific shell, see the [Shell Completions Guide](https://MIDIDiff.readthedocs.io/en/latest/shell-completions.html) in the documentation.
 
 ### Programmatic usage
 
