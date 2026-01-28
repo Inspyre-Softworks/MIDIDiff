@@ -128,7 +128,7 @@ Poor changelog entries:
    poetry run midi-diff --version
    ```
 
-**Important:** Always use editable install (`poetry install` or `pip install -e .`) when developing,
+**Important:** Always use an editable install (`poetry install` or `pip install -e .`) when developing,
 so you can test changes immediately without rebuilding/reinstalling the package.
 
 ### Building
