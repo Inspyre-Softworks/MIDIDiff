@@ -72,6 +72,25 @@ def _get_metadata_version(name: str, fallback: str) -> str:
         return fallback
 
 
+def _get_latest_version_from_pypi() -> str | None:
+    """
+    Fetch the latest version from PyPI.
+    
+    NOTE: This function makes a network request to PyPI (https://pypi.org/pypi/midi-diff/json)
+    to retrieve version information.
+    
+    Returns:
+        Latest version string from PyPI, or None if the request fails
+    """
+    try:
+        with urllib.request.urlopen(PYPI_JSON_URL, timeout=5) as response:
+            payload = json.load(response)
+    except (urllib.error.URLError, urllib.error.HTTPError, OSError, json.JSONDecodeError):
+        return None
+    
+    return payload.get("info", {}).get("version")
+
+
 def _check_for_update(current_version: str) -> str:
     """
     Check PyPI for newer version.
@@ -87,15 +106,10 @@ def _check_for_update(current_version: str) -> str:
     Returns:
         Update status message
     """
-    try:
-        with urllib.request.urlopen(PYPI_JSON_URL, timeout=5) as response:
-            payload = json.load(response)
-    except (urllib.error.URLError, urllib.error.HTTPError, OSError, json.JSONDecodeError) as exc:
-        return f"Update check failed: {exc}"
-
-    latest = payload.get("info", {}).get("version")
-    if not latest:
-        return "Update check failed: missing version metadata."
+    latest = _get_latest_version_from_pypi()
+    
+    if latest is None:
+        return "Update check failed: unable to fetch version from PyPI."
     if latest == current_version:
         return "Up to date."
     return f"Update available: {latest} (installed {current_version})."
@@ -333,11 +347,22 @@ def upgrade_package(include_pre: bool = False) -> None:
         console.print(f'[yellow]⚠ {update_msg}[/yellow]')
         console.print("\n[dim]Upgrading midi-diff...[/dim]")
     
-    # Build pip command
-    pip_cmd = [sys.executable, "-m", "pip", "install", "--upgrade"]
+    # Get the latest version from PyPI to use exact version specifier
+    latest_version = _get_latest_version_from_pypi()
+    
+    if latest_version is None:
+        error_msg = "Failed to fetch latest version from PyPI. Cannot proceed with upgrade."
+        if not _RICH_AVAILABLE:
+            print(f"\n{error_msg}")
+        else:
+            console.print(f"[red]✗ {error_msg}[/red]")
+        sys.exit(1)
+    
+    # Build pip command with exact version specifier (==) to ensure proper upgrade
+    pip_cmd = [sys.executable, "-m", "pip", "install"]
     if include_pre:
         pip_cmd.append("--pre")
-    pip_cmd.append(DIST_NAME)
+    pip_cmd.append(f"{DIST_NAME}=={latest_version}")
     
     try:
         # Run pip upgrade
