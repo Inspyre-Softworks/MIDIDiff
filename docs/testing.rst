@@ -58,8 +58,9 @@ Running Tests
 Manual Testing
 ~~~~~~~~~~~~~~
 
-Since this project currently has no automated test suite, testing is performed
-manually by running the CLI commands and verifying their output.
+This project does not currently have a dedicated unit or integration test suite.
+Most functional testing is performed manually by running the CLI commands and verifying their output.
+A lightweight GitHub Actions CI workflow also runs automated smoke checks (build, imports, basic CLI flags), but it is not a substitute for a full test suite.
 
 Test the main diff functionality:
 
