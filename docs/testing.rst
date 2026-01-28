@@ -142,7 +142,7 @@ The CI workflow:
 Development Workflow
 --------------------
 
-Recommended workflow when developing with editable install:
+Recommended workflow when developing with an editable install:
 
 1. **Make changes** to the source code in ``midi_diff/``
 
