@@ -25,6 +25,8 @@ import urllib.request
 from importlib import metadata
 from typing import Final
 
+from packaging.version import Version, InvalidVersion
+
 try:
     from rich.console import Console
     from rich.panel import Panel
@@ -72,6 +74,32 @@ def _get_metadata_version(name: str, fallback: str) -> str:
         return fallback
 
 
+def _get_latest_version_from_pypi() -> tuple[str | None, str | None]:
+    """
+    Fetch the latest stable version from PyPI.
+    
+    NOTE: This function makes a network request to PyPI (https://pypi.org/pypi/midi-diff/json)
+    to retrieve version information. The PyPI JSON API returns only the latest stable release
+    in the info.version field; pre-release versions are not included.
+    
+    Returns:
+        A tuple of (version, error_message):
+        - version: Latest stable version string from PyPI, or None if the request fails
+        - error_message: Error description if the request fails, or None on success
+    """
+    try:
+        with urllib.request.urlopen(PYPI_JSON_URL, timeout=5) as response:
+            payload = json.load(response)
+    except (urllib.error.URLError, urllib.error.HTTPError, OSError, json.JSONDecodeError) as exc:
+        return None, str(exc)
+    
+    version = payload.get("info", {}).get("version")
+    if not version:
+        return None, "missing version metadata"
+    
+    return version, None
+
+
 def _check_for_update(current_version: str) -> str:
     """
     Check PyPI for newer version.
@@ -87,18 +115,28 @@ def _check_for_update(current_version: str) -> str:
     Returns:
         Update status message
     """
-    try:
-        with urllib.request.urlopen(PYPI_JSON_URL, timeout=5) as response:
-            payload = json.load(response)
-    except (urllib.error.URLError, urllib.error.HTTPError, OSError, json.JSONDecodeError) as exc:
-        return f"Update check failed: {exc}"
-
-    latest = payload.get("info", {}).get("version")
-    if not latest:
-        return "Update check failed: missing version metadata."
+    latest, error = _get_latest_version_from_pypi()
+    
+    if latest is None:
+        return f"Update check failed: {error}"
     if latest == current_version:
         return "Up to date."
-    return f"Update available: {latest} (installed {current_version})."
+    
+    # Use version comparison to determine if it's truly an upgrade or downgrade
+    try:
+        current_ver = Version(current_version)
+        latest_ver = Version(latest)
+        
+        if latest_ver > current_ver:
+            return f"Update available: {latest} (installed {current_version})."
+        elif latest_ver < current_ver:
+            return f"PyPI version: {latest} (installed {current_version})."
+        else:
+            # Versions are equal (shouldn't reach here due to equality check above)
+            return "Up to date."
+    except InvalidVersion:
+        # Fall back to neutral wording if version parsing fails
+        return f"PyPI version: {latest} (installed {current_version})."
 
 
 def print_version_info() -> None:
@@ -298,46 +336,69 @@ def upgrade_package(include_pre: bool = False) -> None:
     """
     current_version = _get_version()
     
+    # Get the latest version from PyPI first to avoid multiple network requests
+    latest_version, error = _get_latest_version_from_pypi()
+    
+    if latest_version is None:
+        # Align with original behavior: print error and return instead of sys.exit(1)
+        manual_hint = "You can try upgrading manually with: pip install --upgrade midi-diff"
+        if not _RICH_AVAILABLE:
+            print(f"Current version: {current_version}")
+            print("Checking for updates...")
+            print(f"Update check failed: {error}")
+            print("Cannot proceed with upgrade due to update check failure.")
+            print(manual_hint)
+        else:
+            console = Console()
+            console.print(f"[bold]Current version:[/bold] {current_version}")
+            console.print("[dim]Checking for updates...[/dim]")
+            console.print(f'[red]Update check failed: {error}[/red]')
+            console.print("[red]Cannot proceed with upgrade due to update check failure.[/red]")
+            console.print(f"[yellow]{manual_hint}[/yellow]")
+        return
+    
+    # Check if an update is needed
+    if latest_version == current_version:
+        if not _RICH_AVAILABLE:
+            print(f"Current version: {current_version}")
+            print("Checking for updates...")
+            print("Up to date.")
+            print("No upgrade needed.")
+        else:
+            console = Console()
+            console.print(f"[bold]Current version:[/bold] {current_version}")
+            console.print("[dim]Checking for updates...[/dim]")
+            console.print(f'[green]✓ Up to date.[/green]')
+            console.print("[dim]No upgrade needed.[/dim]")
+        return
+    
+    # Display update information
+    update_msg = f"Update available: {latest_version} (installed {current_version})."
+    
     if not _RICH_AVAILABLE:
         print(f"Current version: {current_version}")
         print("Checking for updates...")
-        update_msg = _check_for_update(current_version)
         print(update_msg)
-        
-        if "Up to date" in update_msg:
-            print("No upgrade needed.")
-            return
-        
-        if "Update check failed" in update_msg:
-            print("Cannot proceed with upgrade due to update check failure.")
-            return
-        
         print("\nUpgrading midi-diff...")
     else:
         console = Console()
         console.print(f"[bold]Current version:[/bold] {current_version}")
         console.print("[dim]Checking for updates...[/dim]")
-        
-        update_msg = _check_for_update(current_version)
-        
-        if "Up to date" in update_msg:
-            console.print(f'[green]✓ {update_msg}[/green]')
-            console.print("[dim]No upgrade needed.[/dim]")
-            return
-        
-        if "Update check failed" in update_msg:
-            console.print(f'[red]{update_msg}[/red]')
-            console.print("[red]Cannot proceed with upgrade due to update check failure.[/red]")
-            return
-        
         console.print(f'[yellow]⚠ {update_msg}[/yellow]')
         console.print("\n[dim]Upgrading midi-diff...[/dim]")
     
-    # Build pip command
-    pip_cmd = [sys.executable, "-m", "pip", "install", "--upgrade"]
+    # Note: The --pre flag is currently not supported. This function always upgrades
+    # to the latest stable release from PyPI, as _get_latest_version_from_pypi() does
+    # not fetch pre-release versions (PyPI's info.version only returns stable releases).
     if include_pre:
-        pip_cmd.append("--pre")
-    pip_cmd.append(DIST_NAME)
+        warning_msg = "Note: --pre flag has no effect when upgrading to a specific version."
+        if not _RICH_AVAILABLE:
+            print(f"Warning: {warning_msg}")
+        else:
+            console.print(f"[yellow]{warning_msg}[/yellow]")
+    
+    # Build pip command with exact version specifier (==) to ensure proper upgrade
+    pip_cmd = [sys.executable, "-m", "pip", "install", f"{DIST_NAME}=={latest_version}"]
     
     try:
         # Run pip upgrade

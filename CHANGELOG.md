@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-01-28
+
+### Fixed
+- Fixed `upgrade` command to use exact version specifier (`==`) when upgrading via pip, ensuring the package is properly upgraded even when pip incorrectly reports "Requirement already satisfied".
+
 ## [1.0.7] - 2026-01-28
 
 ### Fixed
