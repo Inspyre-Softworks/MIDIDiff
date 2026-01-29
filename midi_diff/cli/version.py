@@ -25,6 +25,8 @@ import urllib.request
 from importlib import metadata
 from typing import Final
 
+from packaging.version import Version, InvalidVersion
+
 try:
     from rich.console import Console
     from rich.panel import Panel
@@ -74,14 +76,15 @@ def _get_metadata_version(name: str, fallback: str) -> str:
 
 def _get_latest_version_from_pypi() -> tuple[str | None, str | None]:
     """
-    Fetch the latest version from PyPI.
+    Fetch the latest stable version from PyPI.
     
     NOTE: This function makes a network request to PyPI (https://pypi.org/pypi/midi-diff/json)
-    to retrieve version information.
+    to retrieve version information. The PyPI JSON API returns only the latest stable release
+    in the info.version field; pre-release versions are not included.
     
     Returns:
         A tuple of (version, error_message):
-        - version: Latest version string from PyPI, or None if the request fails
+        - version: Latest stable version string from PyPI, or None if the request fails
         - error_message: Error description if the request fails, or None on success
     """
     try:
@@ -118,7 +121,22 @@ def _check_for_update(current_version: str) -> str:
         return f"Update check failed: {error}"
     if latest == current_version:
         return "Up to date."
-    return f"Update available: {latest} (installed {current_version})."
+    
+    # Use version comparison to determine if it's truly an upgrade or downgrade
+    try:
+        current_ver = Version(current_version)
+        latest_ver = Version(latest)
+        
+        if latest_ver > current_ver:
+            return f"Update available: {latest} (installed {current_version})."
+        elif latest_ver < current_ver:
+            return f"PyPI version: {latest} (installed {current_version})."
+        else:
+            # Versions are equal (shouldn't reach here due to equality check above)
+            return "Up to date."
+    except InvalidVersion:
+        # Fall back to neutral wording if version parsing fails
+        return f"PyPI version: {latest} (installed {current_version})."
 
 
 def print_version_info() -> None:
@@ -323,17 +341,20 @@ def upgrade_package(include_pre: bool = False) -> None:
     
     if latest_version is None:
         # Align with original behavior: print error and return instead of sys.exit(1)
+        manual_hint = "You can try upgrading manually with: pip install --upgrade midi-diff"
         if not _RICH_AVAILABLE:
             print(f"Current version: {current_version}")
             print("Checking for updates...")
             print(f"Update check failed: {error}")
             print("Cannot proceed with upgrade due to update check failure.")
+            print(manual_hint)
         else:
             console = Console()
             console.print(f"[bold]Current version:[/bold] {current_version}")
             console.print("[dim]Checking for updates...[/dim]")
             console.print(f'[red]Update check failed: {error}[/red]')
             console.print("[red]Cannot proceed with upgrade due to update check failure.[/red]")
+            console.print(f"[yellow]{manual_hint}[/yellow]")
         return
     
     # Check if an update is needed
@@ -366,8 +387,9 @@ def upgrade_package(include_pre: bool = False) -> None:
         console.print(f'[yellow]⚠ {update_msg}[/yellow]')
         console.print("\n[dim]Upgrading midi-diff...[/dim]")
     
-    # Note: --pre flag is not used when an exact version is specified
-    # If the user wants pre-release versions, they should check PyPI manually
+    # Note: The --pre flag is currently not supported. This function always upgrades
+    # to the latest stable release from PyPI, as _get_latest_version_from_pypi() does
+    # not fetch pre-release versions (PyPI's info.version only returns stable releases).
     if include_pre:
         warning_msg = "Note: --pre flag has no effect when upgrading to a specific version."
         if not _RICH_AVAILABLE:
