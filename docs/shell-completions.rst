@@ -13,6 +13,20 @@ Supported Shells
 * **PowerShell** - Windows PowerShell and PowerShell Core (cross-platform)
 * **CMD** - Windows Command Prompt (basic doskey helper)
 
+Environment Overrides
+---------------------
+
+If your completions live in a custom location, set ``MIDI_DIFF_COMPLETIONS_DIR``
+to override the base directory used by ``install-completions``. The final
+target depends on the shell:
+
+* bash: ``$MIDI_DIFF_COMPLETIONS_DIR/.local/share/bash-completion/completions/midi-diff``
+* zsh: ``$MIDI_DIFF_COMPLETIONS_DIR/.zsh/completions/_midi-diff``
+* fish: ``$MIDI_DIFF_COMPLETIONS_DIR/.config/fish/completions/midi-diff.fish``
+* powershell (Windows): ``$MIDI_DIFF_COMPLETIONS_DIR/Documents/PowerShell/Scripts/midi-diff-completion.ps1``
+* powershell (non-Windows): ``$MIDI_DIFF_COMPLETIONS_DIR/.config/powershell/Scripts/midi-diff-completion.ps1``
+* cmd: ``%USERPROFILE%/midi-diff-completion.cmd`` (or under ``MIDI_DIFF_COMPLETIONS_DIR`` if set)
+
 Generating Completion Scripts
 -----------------------------
 
@@ -26,6 +40,28 @@ Replace ``<shell>`` with one of: ``bash``, ``zsh``, ``fish``, ``powershell``, or
 
 The script will be printed to standard output. You can then install it according
 to your shell's conventions.
+
+Automatic Installation
+----------------------
+
+To install completions for the shell you are currently using, run:
+
+.. code-block:: bash
+
+   midi-diff install-completions
+
+The tool will attempt to detect your shell and install the completion script to a
+standard per-user location. To override detection, pass ``--shell``:
+
+.. code-block:: bash
+
+   midi-diff install-completions --shell zsh
+
+You can also override the base directory used for installation by setting
+``MIDI_DIFF_COMPLETIONS_DIR``. This is useful if your shell loads completions
+from a nonstandard location. On non-Windows systems, PowerShell defaults to
+``~/.config/powershell/Scripts``, while on Windows it uses
+``~/Documents/PowerShell/Scripts``. CMD writes to ``%USERPROFILE%`` by default.
 
 Installation Instructions
 -------------------------
